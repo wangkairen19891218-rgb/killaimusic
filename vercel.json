@@ -1,0 +1,32 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "installCommand": "npm install",
+  "functions": {
+    "api/**": {
+      "runtime": "nodejs20.x"
+    }
+  },
+  "env": {
+    "SUPABASE_URL": "https://cykasaejdttlcrolrysl.supabase.co",
+    "SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN5a2FzYWVqZHR0bGNyb2xyeXNsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg3NjcwOTIsImV4cCI6MjA3NDM0MzA5Mn0.wjCrqLYYtO1IA1p6pK2O82WFuBxUkhlQWyVppO1Izx8",
+    "SUPABASE_SERVICE_ROLE_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN5a2FzYWVqZHR0bGNyb2xyeXNsIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1ODc2NzA5MiwiZXhwIjoyMDc0MzQzMDkyfQ.3B7fRQfqoPjp8_mlBYY4LSTxCqfUKu2XkfpOmMsYw9Y",
+    "JWT_SECRET": "music-production-app-jwt-secret-key-2024-production",
+    "JWT_EXPIRES_IN": "7d",
+    "PORT": "3001",
+    "FRONTEND_URL": "https://killaimusic.fun",
+    "BACKEND_URL": "https://killaimusic.fun/api",
+    "VITE_SUPABASE_URL": "https://cykasaejdttlcrolrysl.supabase.co",
+    "VITE_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN5a2FzYWVqZHR0bGNyb2xyeXNsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg3NjcwOTIsImV4cCI6MjA3NDM0MzA5Mn0.wjCrqLYYtO1IA1p6pK2O82WFuBxUkhlQWyVppO1Izx8"
+  },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index?path=$1"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
