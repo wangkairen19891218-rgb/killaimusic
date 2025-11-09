@@ -6,6 +6,10 @@
     "api/index.ts": {
       "runtime": "nodejs20.x"
     }
+    ,
+    "api/auth/login.ts": {
+      "runtime": "nodejs20.x"
+    }
   },
   "env": {
     "SUPABASE_URL": "https://cykasaejdttlcrolrysl.supabase.co",
