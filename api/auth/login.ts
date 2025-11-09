@@ -1,6 +1,4 @@
 import type { IncomingMessage, ServerResponse } from 'http'
-import { supabase } from '../config/supabase'
-import bcrypt from 'bcryptjs'
 
 const allowedOrigins = new Set([
   'https://killaimusic.fun',
@@ -10,11 +8,13 @@ const allowedOrigins = new Set([
 ])
 
 function setCors(res: ServerResponse, origin?: string) {
-  const allowOrigin = origin && allowedOrigins.has(origin) ? origin : '*'
-  res.setHeader('Access-Control-Allow-Origin', allowOrigin)
+  const allowed = origin && allowedOrigins.has(origin)
+  res.setHeader('Access-Control-Allow-Origin', allowed ? origin! : '*')
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS')
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
-  res.setHeader('Access-Control-Allow-Credentials', 'true')
+  if (allowed) {
+    res.setHeader('Access-Control-Allow-Credentials', 'true')
+  }
 }
 
 async function parseJson(req: IncomingMessage): Promise<any> {
@@ -72,6 +72,9 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
       return
     }
 
+    // Dynamically import heavy dependencies to avoid preflight failures at load time
+    const supabaseModule = await import('../config/supabase')
+    const supabase = (supabaseModule as any).supabase
     if (!supabase || typeof (supabase as any).from !== 'function') {
       res.statusCode = 500
       res.setHeader('Content-Type', 'application/json')
@@ -92,6 +95,8 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
       return
     }
 
+    const bcryptModule = await import('bcryptjs')
+    const bcrypt = (bcryptModule as any).default || bcryptModule
     const isValidPassword = await bcrypt.compare(password, (user as any).password)
     if (!isValidPassword) {
       res.statusCode = 401
