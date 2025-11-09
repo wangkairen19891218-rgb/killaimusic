@@ -9,6 +9,9 @@
     ,
     "api/auth/login.js": {
       "runtime": "nodejs20.x"
+    },
+    "api/auth/ping.js": {
+      "runtime": "nodejs20.x"
     }
   },
   "env": {
