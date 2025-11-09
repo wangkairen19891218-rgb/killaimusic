@@ -2,6 +2,38 @@ import type { IncomingMessage, ServerResponse } from 'http'
 import { parse as parseUrl } from 'url'
 import app from './app'
 
+// Allowed origins for CORS. Keep in sync with app.ts
+const allowedOrigins = new Set([
+  'https://kililamusic.fun',
+  'https://www.kililamusic.fun',
+  'https://killaimusic.fun',
+  'https://www.killaimusic.fun',
+  'http://localhost:5173',
+  'http://localhost:3000'
+])
+
+function setCorsHeaders(req: IncomingMessage, res: ServerResponse) {
+  const origin = (req.headers['origin'] as string | undefined) || ''
+  const allowed = origin && allowedOrigins.has(origin)
+
+  // Echo back the origin when allowed, otherwise fallback to '*'
+  res.setHeader('Access-Control-Allow-Origin', allowed ? origin : '*')
+
+  // Allow credentials only for whitelisted origins
+  if (allowed) {
+    res.setHeader('Access-Control-Allow-Credentials', 'true')
+  }
+
+  // Dynamically allow requested method/headers for preflight
+  const reqMethod = (req.headers['access-control-request-method'] as string | undefined) || 'GET,POST,PUT,DELETE,OPTIONS'
+  const reqHeaders = (req.headers['access-control-request-headers'] as string | undefined) || 'Content-Type, Authorization'
+  res.setHeader('Access-Control-Allow-Methods', reqMethod)
+  res.setHeader('Access-Control-Allow-Headers', reqHeaders)
+
+  // Help caches/proxies handle per-origin variations
+  res.setHeader('Vary', 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers')
+}
+
 // Serverless handler that proxies requests to the Express app
 export default function handler(req: IncomingMessage, res: ServerResponse) {
   try {
@@ -16,12 +48,12 @@ export default function handler(req: IncomingMessage, res: ServerResponse) {
       req.url = `/api${normalized}`
     }
 
-    // Minimal CORS preflight handling safety: if OPTIONS without body, allow
+    // Minimal CORS handling: set headers for all requests
+    setCorsHeaders(req, res)
+
+    // Proper preflight response
     if (req.method === 'OPTIONS') {
-      res.setHeader('Access-Control-Allow-Origin', '*')
-      res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS')
-      res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
-      res.statusCode = 200
+      res.statusCode = 204
       res.end()
       return
     }
