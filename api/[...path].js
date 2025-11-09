@@ -17,6 +17,8 @@ function setCors(req, res) {
   const reqHeaders = (req.headers['access-control-request-headers'] || 'Content-Type, Authorization')
   res.setHeader('Access-Control-Allow-Methods', reqMethod)
   res.setHeader('Access-Control-Allow-Headers', reqHeaders)
+  res.setHeader('Access-Control-Expose-Headers', 'X-Serverless-Function, X-Debug-Origin')
+  res.setHeader('Access-Control-Max-Age', '600')
   res.setHeader('Vary', 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers')
 }
 
