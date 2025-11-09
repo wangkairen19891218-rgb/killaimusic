@@ -10,7 +10,7 @@
     "api/[...path].ts": {
       "runtime": "nodejs20.x"
     },
-    "api/auth/login.ts": {
+    "api/auth/login.js": {
       "runtime": "nodejs20.x"
     }
     
@@ -28,6 +28,14 @@
     "VITE_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN5a2FzYWVqZHR0bGNyb2xyeXNsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg3NjcwOTIsImV4cCI6MjA3NDM0MzA5Mn0.wjCrqLYYtO1IA1p6pK2O82WFuBxUkhlQWyVppO1Izx8"
   },
   "rewrites": [
+    {
+      "source": "/api/auth/login",
+      "destination": "/api/auth/login"
+    },
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/[...path]"
+    },
     {
       "source": "/(.*)",
       "destination": "/index.html"
