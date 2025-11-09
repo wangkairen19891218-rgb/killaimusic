@@ -26,7 +26,7 @@ async function parseJson(req) {
   })
 }
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   try {
     setCors(res, req.headers['origin'])
 
