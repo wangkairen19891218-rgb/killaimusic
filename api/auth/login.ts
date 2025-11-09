@@ -1,4 +1,4 @@
-import type { IncomingMessage, ServerResponse } from 'http'
+// Minimal serverless function to guarantee stable preflight responses
 
 const allowedOrigins = new Set([
   'https://kililamusic.fun',
@@ -9,7 +9,7 @@ const allowedOrigins = new Set([
   'http://localhost:3000'
 ])
 
-function setCors(req: IncomingMessage, res: ServerResponse) {
+function setCors(req: any, res: any) {
   const origin = (req.headers['origin'] as string | undefined) || ''
   const allowed = origin && allowedOrigins.has(origin)
   res.setHeader('Access-Control-Allow-Origin', allowed ? origin : '*')
@@ -21,7 +21,7 @@ function setCors(req: IncomingMessage, res: ServerResponse) {
   res.setHeader('Vary', 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers')
 }
 
-export default async function handler(req: IncomingMessage, res: ServerResponse) {
+export default async function handler(req: any, res: any) {
   try {
     setCors(req, res)
     // Marker header to identify this function in responses
