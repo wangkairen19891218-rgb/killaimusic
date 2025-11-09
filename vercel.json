@@ -29,10 +29,6 @@
       "destination": "/api/auth/login"
     },
     {
-      "source": "/api/(.*)",
-      "destination": "/api/index?path=$1"
-    },
-    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
