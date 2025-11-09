@@ -28,7 +28,7 @@ async function parseJson(req: IncomingMessage): Promise<any> {
   })
 }
 
-// Dedicated serverless function for /api/auth/login
+// Dedicated serverless function for /api/auth/login (minimal and dependency-free)
 export default async function handler(req: IncomingMessage, res: ServerResponse) {
   try {
     setCors(res, req.headers['origin'] as string | undefined)
@@ -57,7 +57,7 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
       return
     }
 
-    // Demo account shortcut
+    // Minimal stub: accept demo credentials and return static user+token
     if (email === 'demo@example.com' && password === 'password') {
       const demoUser = {
         id: 'demo_user_id',
@@ -72,46 +72,10 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
       return
     }
 
-    // Dynamically import heavy dependencies to avoid preflight failures at load time
-    const supabaseModule = await import('../config/supabase')
-    const supabase = (supabaseModule as any).supabase
-    if (!supabase || typeof (supabase as any).from !== 'function') {
-      res.statusCode = 500
-      res.setHeader('Content-Type', 'application/json')
-      res.end(JSON.stringify({ success: false, error: 'Database unavailable' }))
-      return
-    }
-
-    const { data: user, error } = await supabase
-      .from('users')
-      .select('id, name, email, password, subscription, created_at')
-      .eq('email', email)
-      .single()
-
-    if (error || !user) {
-      res.statusCode = 401
-      res.setHeader('Content-Type', 'application/json')
-      res.end(JSON.stringify({ success: false, error: 'Invalid email or password' }))
-      return
-    }
-
-    const bcryptModule = await import('bcryptjs')
-    const bcrypt = (bcryptModule as any).default || bcryptModule
-    const isValidPassword = await bcrypt.compare(password, (user as any).password)
-    if (!isValidPassword) {
-      res.statusCode = 401
-      res.setHeader('Content-Type', 'application/json')
-      res.end(JSON.stringify({ success: false, error: 'Invalid email or password' }))
-      return
-    }
-
-    // Minimal token payload for now
-    const token = `user_${(user as any).id}_${Date.now()}`
-
-    const { password: _pw, ...userWithoutPassword } = (user as any)
-    res.statusCode = 200
+    // For non-demo credentials, return a controlled failure to confirm function runs
+    res.statusCode = 401
     res.setHeader('Content-Type', 'application/json')
-    res.end(JSON.stringify({ success: true, message: 'Login successful', data: { user: userWithoutPassword, token } }))
+    res.end(JSON.stringify({ success: false, error: 'Invalid email or password' }))
   } catch (err: any) {
     try {
       res.statusCode = 500
