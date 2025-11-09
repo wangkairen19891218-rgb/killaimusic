@@ -1,6 +1,9 @@
 // Vercel serverless entry: load compiled CJS handler safely from dist
 import { createRequire } from 'module'
+import path from 'path'
+import { fileURLToPath } from 'url'
 const require = createRequire(import.meta.url)
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export default function vercelHandler(req, res) {
   // CORS helper for early responses (preflight or crashes before Express)
@@ -35,7 +38,23 @@ export default function vercelHandler(req, res) {
 
   let handler
   try {
-    const compiled = require('./dist/index.js')
+    // Try multiple candidate paths to accommodate Vercel packaging differences
+    const candidates = [
+      path.join(__dirname, 'dist/index.js'),
+      path.join(__dirname, 'api/dist/index.js'),
+      path.join(__dirname, 'dist/app.js') // fallback to app direct
+    ]
+
+    let compiled
+    for (const p of candidates) {
+      try {
+        compiled = require(p)
+        if (compiled) break
+      } catch {}
+    }
+
+    if (!compiled) throw new Error('No compiled handler found in candidates')
+
     handler = compiled?.default || compiled
   } catch (e) {
     console.error('Failed to load compiled handler:', e)
