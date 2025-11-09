@@ -34,6 +34,8 @@ const app: express.Application = express()
 
 // CORS configuration
 const allowedOrigins = [
+  'https://kililamusic.fun',
+  'https://www.kililamusic.fun',
   'https://killaimusic.fun',
   'https://www.killaimusic.fun',
   'http://localhost:5173',
