@@ -7,7 +7,7 @@
       "runtime": "nodejs20.x"
     }
     ,
-    "api/auth/login.ts": {
+    "api/auth/login.js": {
       "runtime": "nodejs20.x"
     }
   },
