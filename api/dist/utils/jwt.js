@@ -7,15 +7,16 @@ exports.getUserFromRequest = exports.authenticateToken = exports.verifyToken = e
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
+const dotenv_1 = __importDefault(require("dotenv"));
 (() => {
     const envPath = process.env.NODE_ENV === 'production'
         ? path_1.default.resolve(process.cwd(), '.env.production')
         : path_1.default.resolve(process.cwd(), '.env');
     if (fs_1.default.existsSync(envPath)) {
-        require('dotenv').config({ path: envPath });
+        dotenv_1.default.config({ path: envPath });
     }
     else {
-        require('dotenv').config();
+        dotenv_1.default.config();
     }
 })();
 const JWT_SECRET = process.env.JWT_SECRET || 'your-super-secret-jwt-key';

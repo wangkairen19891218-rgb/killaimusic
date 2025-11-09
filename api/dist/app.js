@@ -24,23 +24,27 @@ const ai_analysis_1 = __importDefault(require("./routes/ai-analysis"));
     }
 })();
 const app = (0, express_1.default)();
+const allowedOrigins = [
+    'https://killaimusic.fun',
+    'https://www.killaimusic.fun',
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'http://192.168.2.14:5173'
+];
 app.use((0, cors_1.default)({
-    origin: [
-        'https://trae5mzqm.vercel.app',
-        'https://trae5mzqm-kellengeges-projects.vercel.app',
-        'https://trae5mzqm-b9fpgajiq-kellengeges-projects.vercel.app',
-        'https://trae5mzqm-wangkairen19891218-8604-kellengeges-projects.vercel.app',
-        'https://trae5mzqm-91hmqyye1-kellengeges-projects.vercel.app',
-        'https://killaimusic.fun',
-        'https://www.killaimusic.fun',
-        'http://localhost:5173',
-        'http://localhost:3000',
-        'http://192.168.2.14:5173'
-    ],
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        }
+        else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
+app.options('*', (0, cors_1.default)());
 app.use(express_1.default.json({ limit: '10mb' }));
 app.use(express_1.default.urlencoded({ extended: true, limit: '10mb' }));
 app.use('/api/auth', auth_1.default);

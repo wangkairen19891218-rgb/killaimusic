@@ -25,11 +25,10 @@ const supabaseAnonKey = process.env.SUPABASE_ANON_KEY || '';
 if (!supabaseUrl) {
     console.error('Supabase URL missing in environment variables');
 }
-let supabase = null;
-exports.supabase = supabase;
+let supabaseClient = null;
 try {
     if (supabaseUrl && supabaseServiceKey) {
-        exports.supabase = supabase = (0, supabase_js_1.createClient)(supabaseUrl, supabaseServiceKey, {
+        supabaseClient = (0, supabase_js_1.createClient)(supabaseUrl, supabaseServiceKey, {
             auth: {
                 autoRefreshToken: false,
                 persistSession: false
@@ -38,7 +37,7 @@ try {
     }
     else if (supabaseUrl && supabaseAnonKey) {
         console.warn('Using Supabase anon key fallback; operations may be restricted by RLS');
-        exports.supabase = supabase = (0, supabase_js_1.createClient)(supabaseUrl, supabaseAnonKey, {
+        supabaseClient = (0, supabase_js_1.createClient)(supabaseUrl, supabaseAnonKey, {
             auth: {
                 autoRefreshToken: false,
                 persistSession: false
@@ -52,7 +51,8 @@ try {
 catch (e) {
     console.error('Failed to initialize Supabase client:', e);
 }
+exports.supabase = supabaseClient;
 exports.supabaseAnon = (supabaseUrl && supabaseAnonKey)
     ? (0, supabase_js_1.createClient)(supabaseUrl, supabaseAnonKey)
     : null;
-exports.default = supabase;
+exports.default = supabaseClient;

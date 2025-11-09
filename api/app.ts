@@ -34,11 +34,6 @@ const app: express.Application = express()
 
 // CORS configuration
 const allowedOrigins = [
-  'https://trae5mzqm.vercel.app',
-  'https://trae5mzqm-kellengeges-projects.vercel.app',
-  'https://trae5mzqm-b9fpgajiq-kellengeges-projects.vercel.app',
-  'https://trae5mzqm-wangkairen19891218-8604-kellengeges-projects.vercel.app',
-  'https://trae5mzqm-91hmqyye1-kellengeges-projects.vercel.app',
   'https://killaimusic.fun',
   'https://www.killaimusic.fun',
   'http://localhost:5173',

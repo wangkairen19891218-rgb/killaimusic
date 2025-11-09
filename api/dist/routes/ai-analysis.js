@@ -382,7 +382,7 @@ router.get('/stats/:projectId', async (req, res) => {
         let totalProcessingTime = 0;
         let confidenceSum = 0;
         let confidenceCount = 0;
-        stats.forEach(analysis => {
+        stats.forEach((analysis) => {
             totalAnalyses++;
             typeCount[analysis.analysis_type] = (typeCount[analysis.analysis_type] || 0) + 1;
             if (analysis.processing_time_ms) {

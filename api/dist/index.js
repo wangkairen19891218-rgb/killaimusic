@@ -6,5 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = handler;
 const app_1 = __importDefault(require("./app"));
 function handler(req, res) {
-    return (0, app_1.default)(req, res);
+    ;
+    app_1.default(req, res);
 }

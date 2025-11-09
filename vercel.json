@@ -3,7 +3,11 @@
   "outputDirectory": "dist",
   "installCommand": "npm install",
   "functions": {
-    "api/**": {
+    "api/index.js": {
+      "runtime": "nodejs20.x",
+      "includeFiles": "api/dist/**"
+    },
+    "api/health.js": {
       "runtime": "nodejs20.x"
     }
   },
