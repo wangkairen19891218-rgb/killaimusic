@@ -1,6 +1,5 @@
 import type { IncomingMessage, ServerResponse } from 'http'
 import { parse as parseUrl } from 'url'
-import app from './app'
 
 // Allowed origins for CORS. Keep in sync with app.ts
 const allowedOrigins = new Set([
@@ -51,14 +50,26 @@ export default function handler(req: IncomingMessage, res: ServerResponse) {
     // Minimal CORS handling: set headers for all requests
     setCorsHeaders(req, res)
 
-    // Proper preflight response
+    // Proper preflight response – short-circuit before importing app
     if (req.method === 'OPTIONS') {
       res.statusCode = 204
       res.end()
       return
     }
 
-    ;(app as any)(req, res)
+    // Lazy-load Express app to avoid init-time crashes affecting preflight
+    let expressApp: any
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      expressApp = require('./app').default
+    } catch (e) {
+      res.statusCode = 500
+      res.setHeader('Content-Type', 'application/json')
+      res.end(JSON.stringify({ success: false, error: 'App load error', detail: String((e as any)?.message || e) }))
+      return
+    }
+
+    ;(expressApp as any)(req, res)
   } catch (error) {
     try {
       res.statusCode = 500
