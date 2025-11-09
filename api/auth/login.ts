@@ -24,6 +24,8 @@ function setCors(req: IncomingMessage, res: ServerResponse) {
 export default async function handler(req: IncomingMessage, res: ServerResponse) {
   try {
     setCors(req, res)
+    // Marker header to identify this function in responses
+    res.setHeader('X-Serverless-Function', 'api/auth/login')
 
     if (req.method === 'OPTIONS') {
       res.statusCode = 204
@@ -50,7 +52,7 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
     try {
       res.statusCode = 500
       res.setHeader('Content-Type', 'application/json')
-      res.end(JSON.stringify({ success: false, error: 'Server function error' }))
+      res.end(JSON.stringify({ success: false, error: 'Server function error', function: 'api/auth/login' }))
     } catch {}
   }
 }

@@ -49,6 +49,8 @@ export default function handler(req: IncomingMessage, res: ServerResponse) {
 
     // Minimal CORS handling: set headers for all requests
     setCorsHeaders(req, res)
+    // Marker header to identify index function in responses
+    res.setHeader('X-Serverless-Function', 'api/index')
 
     // Proper preflight response – short-circuit before importing app
     if (req.method === 'OPTIONS') {
