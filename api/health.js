@@ -3,6 +3,8 @@ const allowedOrigins = new Set([
   'https://www.kililamusic.fun',
   'https://killaimusic.fun',
   'https://www.killaimusic.fun',
+  'https://inkmusic.fun',
+  'https://www.inkmusic.fun',
   'http://localhost:5173',
   'http://localhost:3000'
 ])
@@ -16,12 +18,17 @@ function setCors(req, res) {
   const reqHeaders = (req.headers['access-control-request-headers'] || 'Content-Type, Authorization')
   res.setHeader('Access-Control-Allow-Methods', reqMethod)
   res.setHeader('Access-Control-Allow-Headers', reqHeaders)
+  res.setHeader('Access-Control-Expose-Headers', 'X-Serverless-Function, X-Debug-Origin, X-Debug-URL, X-Debug-Method')
+  res.setHeader('Access-Control-Max-Age', '600')
   res.setHeader('Vary', 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers')
 }
 
 module.exports = function handler(req, res) {
   setCors(req, res)
   res.setHeader('X-Serverless-Function', 'api/health')
+  res.setHeader('X-Debug-Origin', (req.headers['origin'] || ''))
+  res.setHeader('X-Debug-URL', req.url || '')
+  res.setHeader('X-Debug-Method', req.method || '')
   if (req.method === 'OPTIONS') {
     res.statusCode = 204
     res.end()

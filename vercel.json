@@ -9,9 +9,6 @@
     ,
     "api/[...path].js": {
       "runtime": "nodejs20.x"
-    },
-    "api/auth/login.js": {
-      "runtime": "nodejs20.x"
     }
     
   },
@@ -22,22 +19,14 @@
     "JWT_SECRET": "music-production-app-jwt-secret-key-2024-production",
     "JWT_EXPIRES_IN": "7d",
     "PORT": "3001",
-    "FRONTEND_URL": "https://kililamusic.fun",
-    "BACKEND_URL": "https://kililamusic.fun/api",
+    "FRONTEND_URL": "https://killaimusic.fun",
+    "BACKEND_URL": "https://killaimusic.fun/api",
     "VITE_SUPABASE_URL": "https://cykasaejdttlcrolrysl.supabase.co",
     "VITE_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN5a2FzYWVqZHR0bGNyb2xyeXNsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg3NjcwOTIsImV4cCI6MjA3NDM0MzA5Mn0.wjCrqLYYtO1IA1p6pK2O82WFuBxUkhlQWyVppO1Izx8"
   },
   "rewrites": [
     {
-      "source": "/api/auth/login",
-      "destination": "/api/auth/login"
-    },
-    {
-      "source": "/api/(.*)",
-      "destination": "/api/[...path]"
-    },
-    {
-      "source": "/(.*)",
+      "source": "/((?!api).*)",
       "destination": "/index.html"
     }
   ]

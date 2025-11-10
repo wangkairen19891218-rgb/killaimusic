@@ -25,8 +25,12 @@ const ai_analysis_1 = __importDefault(require("./routes/ai-analysis"));
 })();
 const app = (0, express_1.default)();
 const allowedOrigins = [
+    'https://kililamusic.fun',
+    'https://www.kililamusic.fun',
     'https://killaimusic.fun',
     'https://www.killaimusic.fun',
+    'https://inkmusic.fun',
+    'https://www.inkmusic.fun',
     'http://localhost:5173',
     'http://localhost:3000',
     'http://192.168.2.14:5173'
@@ -37,12 +41,13 @@ app.use((0, cors_1.default)({
             callback(null, true);
         }
         else {
-            callback(new Error('Not allowed by CORS'));
+            callback(null, false);
         }
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    optionsSuccessStatus: 204
 }));
 app.options('*', (0, cors_1.default)());
 app.use(express_1.default.json({ limit: '10mb' }));

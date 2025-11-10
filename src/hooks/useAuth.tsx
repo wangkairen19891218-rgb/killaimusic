@@ -123,21 +123,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         },
         body: JSON.stringify({ email, password })
       });
-      
       const text = await response.text();
-      let data: any;
+      let parsed: any = null;
       try {
-        data = JSON.parse(text);
+        parsed = JSON.parse(text);
       } catch {
-        data = { success: false, error: text || '服务器错误' };
+        // 保持 parsed 为 null，以便后续统一处理
       }
-      
-      if (response.ok && data.success) {
-        const { user, token } = data.data;
-        setUser(user);
-        localStorage.setItem('auth_token', token);
-        localStorage.setItem('user_data', JSON.stringify(user));
-        
+
+      const ok = response.ok;
+      const success = !!(parsed && parsed.success);
+      const userData = parsed?.data?.user ?? null;
+      const tokenData = parsed?.data?.token ?? null;
+
+      if (ok && success && userData && tokenData) {
+        setUser(userData);
+        localStorage.setItem('auth_token', tokenData);
+        localStorage.setItem('user_data', JSON.stringify(userData));
         return { success: true };
       } else {
         // Allow demo login even when backend returns 4xx/5xx
@@ -148,7 +150,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           localStorage.setItem('user_data', JSON.stringify(demoUser));
           return { success: true };
         }
-        return { success: false, error: data.error || '登录失败' };
+        const errMsg = (parsed && parsed.error) ? parsed.error : (text || '登录失败');
+        return { success: false, error: errMsg };
       }
     } catch (error) {
       console.error('Login error:', error);
@@ -182,19 +185,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         },
         body: JSON.stringify({ name, email, password })
       });
-      
-      const data = await response.json();
-      
-      if (response.ok && data.success) {
-        const { user, token } = data.data;
-        setUser(user);
-        localStorage.setItem('auth_token', token);
-        localStorage.setItem('user_data', JSON.stringify(user));
-        
-        return { success: true };
-      } else {
-        return { success: false, error: data.error || '注册失败' };
+      const text = await response.text();
+      let parsed: any = null;
+      try {
+        parsed = JSON.parse(text);
+      } catch {
+        // 保持 parsed 为 null
       }
+
+      const ok = response.ok;
+      const success = !!(parsed && parsed.success);
+      const userData = parsed?.data?.user ?? null;
+      const tokenData = parsed?.data?.token ?? null;
+
+      if (ok && success && userData && tokenData) {
+        setUser(userData);
+        localStorage.setItem('auth_token', tokenData);
+        localStorage.setItem('user_data', JSON.stringify(userData));
+        return { success: true };
+      }
+
+      const errMsg = (parsed && parsed.error) ? parsed.error : (text || '注册失败');
+      return { success: false, error: errMsg };
     } catch (error) {
       console.error('Register error:', error);
       return { success: false, error: '网络错误，请稍后重试' };

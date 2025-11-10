@@ -7,6 +7,8 @@ const allowedOrigins = new Set([
   'https://www.kililamusic.fun',
   'https://killaimusic.fun',
   'https://www.killaimusic.fun',
+  'https://inkmusic.fun',
+  'https://www.inkmusic.fun',
   'http://localhost:5173',
   'http://localhost:3000'
 ])

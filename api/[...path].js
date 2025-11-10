@@ -4,6 +4,8 @@ const allowedOrigins = new Set([
   'https://www.kililamusic.fun',
   'https://killaimusic.fun',
   'https://www.killaimusic.fun',
+  'https://inkmusic.fun',
+  'https://www.inkmusic.fun',
   'http://localhost:5173',
   'http://localhost:3000'
 ])
@@ -36,12 +38,21 @@ module.exports = async function handler(req, res) {
     // Lazy-load Express app to avoid crashing preflight
     let expressApp
     try {
-      expressApp = require('./app').default || require('./app')
-    } catch (e) {
-      res.statusCode = 500
-      res.setHeader('Content-Type', 'application/json')
-      res.end(JSON.stringify({ success: false, error: 'App load error', detail: String(e && e.message || e) }))
-      return
+      // Prefer compiled app when available
+      const compiled = require('./dist/app')
+      expressApp = compiled.default || compiled
+      res.setHeader('X-Debug-App-Source', 'dist/app')
+    } catch (e1) {
+      try {
+        const src = require('./app')
+        expressApp = src.default || src
+        res.setHeader('X-Debug-App-Source', 'app.ts')
+      } catch (e2) {
+        res.statusCode = 500
+        res.setHeader('Content-Type', 'application/json')
+        res.end(JSON.stringify({ success: false, error: 'App load error', detail: String(e2 && e2.message || e2) }))
+        return
+      }
     }
 
     // Ensure request URL stays under /api/* (Vercel provides full path)
@@ -49,7 +60,13 @@ module.exports = async function handler(req, res) {
       req.url = req.url.startsWith('/') ? `/api${req.url}` : `/api/${req.url}`
     }
 
-    expressApp(req, res)
+    try {
+      expressApp(req, res)
+    } catch (e3) {
+      res.statusCode = 500
+      res.setHeader('Content-Type', 'application/json')
+      res.end(JSON.stringify({ success: false, error: 'Express app runtime error', detail: String(e3 && e3.message || e3) }))
+    }
   } catch (err) {
     try {
       res.statusCode = 500
